@@ -1,0 +1,609 @@
+
+ <!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>runtime运行时之方法method | 刘帅的技术博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="刘帅">
+    
+
+    
+    <meta name="description" content="a Method is a combination of a selector and an implement method 组成结构体">
+<meta property="og:type" content="article">
+<meta property="og:title" content="runtime运行时之方法method">
+<meta property="og:url" content="http://yoursite.com/2016/02/29/runtimeyun-xing-shi-zhi-fang-fa-method/index.html">
+<meta property="og:site_name" content="刘帅的技术博客">
+<meta property="og:description" content="a Method is a combination of a selector and an implement method 组成结构体">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/images/runtime_method1.png">
+<meta property="og:image" content="http://yoursite.com/images/runtime_method2.png">
+<meta property="og:image" content="http://yoursite.com/images/runtime_method3.png">
+<meta property="og:image" content="http://yoursite.com/images/runtime_method4.png">
+<meta property="og:image" content="http://yoursite.com/images/runtime_method5.png">
+<meta property="og:image" content="http://yoursite.com/images/runtime_method6.png">
+<meta property="og:image" content="http://yoursite.com/images/runtime_method7.png">
+<meta property="og:image" content="http://yoursite.com/images/runtime_method8.png">
+<meta property="article:published_time" content="2016-02-29T10:56:07.000Z">
+<meta property="article:modified_time" content="2020-01-03T06:30:55.299Z">
+<meta property="article:author" content="刘帅">
+<meta property="article:tag" content="method">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/runtime_method1.png">
+
+    
+    <link rel="alternative" href="/atom.xml" title="刘帅的技术博客" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/%02.css">
+<link rel="stylesheet" href="/.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="刘帅的技术博客" title="刘帅的技术博客"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="刘帅的技术博客">刘帅的技术博客</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/02/29/runtimeyun-xing-shi-zhi-fang-fa-method/" title="runtime运行时之方法method" itemprop="url">runtime运行时之方法method</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="刘帅" target="_blank" itemprop="author">刘帅</a>
+		
+  <p class="article-time">
+    <time datetime="2016-02-29T10:56:07.000Z" itemprop="datePublished"> Published 2016-02-29</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#runtime之方法-method"><span class="toc-number">1.</span> <span class="toc-text">runtime之方法(method)</span></a></li></ol>
+		
+		</div>
+		
+		<p>a Method is a combination of a selector and an implement</p>
+<p>method 组成结构体</p>
+<a id="more"></a>
+
+<h3 id="runtime之方法-method"><a href="#runtime之方法-method" class="headerlink" title="runtime之方法(method)"></a>runtime之方法(method)</h3><p>runtime 参考<a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/" target="_blank" rel="noopener">https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/</a></p>
+<p>a Method is a combination of a selector and an implement</p>
+<p>method 组成结构体</p>
+<p><img src="/images/runtime_method1.png" alt=""></p>
+<p><img src="/images/runtime_method2.png" alt=""></p>
+<p>runtime 处理method相关方法</p>
+<p><img src="/images/runtime_method3.png" alt=""></p>
+<p>方法的invoke    objc_msgSend(receiver, selector, arg1, arg2, …)</p>
+<p>typedef struct objc_selector *SEL;a Selector is the name of the method used to identity 方法的签名ID<br>比如 setObject:forKey:    setName:age:  这些形式的字符串就代表了sel的标识，但根据这些不知道这个方法参数的类型是什么<br>SEL aSelector = @selector(doSomething:) or SEL aSelector = NSSelectorFromString(@”doSomething:”)</p>
+<p><img src="/images/runtime_method4.png" alt=""></p>
+<p>method_types  方法的参数类型和返回值类型   比如方法setName:age:的参数是这样 v16@0:4@8i12    那些数字可能代表地址的偏移量</p>
+<p><img src="/images/runtime_method5.png" alt=""></p>
+<p><img src="/images/runtime_method6.png" alt=""></p>
+<p>Implement -&gt; id (*IMP)(id, SEL, …)  函数指针变量，指向方法实现代码块的入口地址</p>
+<p>Implementation - the actual executable code block of a method.  it’s a function pointer (an IMP).</p>
+<p>a selector is like a key in in a hash table(NSDictionary) , and the value is the IMP of the method<br>class的方法列表其实是一个字典，key为selectors，IMPs为value。一个IMP是指向方法在内存中的实现</p>
+<p><img src="/images/runtime_method7.png" alt=""></p>
+<p>利用runtime提供的method系列方法，可以很明显的知道可以将两个方法的实现exchange，这就是所谓的<code>swizzle</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">swizzle : swizzling allows you to replace a method in an existing class with one of your own making . This approach can lead to a lot of unexpected behavior ,so it should be used very sparingly.</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/runtime_method8.png" alt=""></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/OC/">OC</a>►<a class="article-category-link" href="/categories/runtime/">runtime</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/method/">method</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2016/02/29/runtimeyun-xing-shi-zhi-fang-fa-method/" data-title="runtime运行时之方法method | 刘帅的技术博客" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/02/29/runtimeyun-xing-shi-zhi-xiao-xi-zhuan-fa-message-forwarding/" title="runtime运行时之消息转发(message forwarding)">
+  <strong>上一篇：</strong><br/>
+  <span>
+  runtime运行时之消息转发(message forwarding)</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/02/29/runtimeyun-xing-shi-zhi-bian-liang/"  title="runtime运行时之变量(variable)">
+ <strong>下一篇：</strong><br/> 
+ <span>runtime运行时之变量(variable)
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#runtime之方法-method"><span class="toc-number">1.</span> <span class="toc-text">runtime之方法(method)</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/OC/" title="OC">OC<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/macdown/" title="macdown">macdown<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/runtime/" title="runtime">runtime<sup>5</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/图片下载/" title="图片下载">图片下载<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/多线程/" title="多线程">多线程<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/开发/" title="开发">开发<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/日历/" title="日历">日历<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/架构/" title="架构">架构<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/软件架构/" title="软件架构">软件架构<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/键盘/" title="键盘">键盘<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/variable/" title="variable">variable<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/测滑返回/" title="测滑返回">测滑返回<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/线程安全/" title="线程安全">线程安全<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/线程的分类/" title="线程的分类">线程的分类<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/MVVM/" title="MVVM">MVVM<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/运行时/" title="运行时">运行时<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/class/" title="class">class<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/动画/" title="动画">动画<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/method/" title="method">method<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/消息转发/" title="消息转发">消息转发<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/sdwebimage/" title="sdwebimage">sdwebimage<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/UITextField/" title="UITextField">UITextField<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/inputView/" title="inputView">inputView<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/NSCalendar/" title="NSCalendar">NSCalendar<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/macdown/" title="macdown">macdown<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark&#39;s Blog">Jark&#39;s Blog</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=b3593ceb&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m Larry Page in Google. <br/>
+			This is my blog,believe it or not.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/2176287895" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2020 
+		
+		<a href="/about" target="_blank" title="刘帅">刘帅</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

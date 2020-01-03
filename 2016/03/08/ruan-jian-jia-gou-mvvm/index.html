@@ -1,0 +1,624 @@
+
+ <!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>软件设计层次架构 | 刘帅的技术博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="刘帅">
+    
+
+    
+    <meta name="description" content="软件层次 工具层(utility，通用的工具，和具体的业务无关) 网络层(负责和server进行交互)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="软件设计层次架构">
+<meta property="og:url" content="http://yoursite.com/2016/03/08/ruan-jian-jia-gou-mvvm/index.html">
+<meta property="og:site_name" content="刘帅的技术博客">
+<meta property="og:description" content="软件层次 工具层(utility，通用的工具，和具体的业务无关) 网络层(负责和server进行交互)">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/images/mvc.png">
+<meta property="og:image" content="http://yoursite.com/images/mvvm3.png">
+<meta property="og:image" content="http://yoursite.com/images/mvvm1.png">
+<meta property="og:image" content="http://yoursite.com/images/mvvm2.png">
+<meta property="article:published_time" content="2016-03-08T10:33:52.000Z">
+<meta property="article:modified_time" content="2020-01-03T06:29:25.593Z">
+<meta property="article:author" content="刘帅">
+<meta property="article:tag" content="MVVM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/mvc.png">
+
+    
+    <link rel="alternative" href="/atom.xml" title="刘帅的技术博客" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/%02.css">
+<link rel="stylesheet" href="/.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="刘帅的技术博客" title="刘帅的技术博客"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="刘帅的技术博客">刘帅的技术博客</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/03/08/ruan-jian-jia-gou-mvvm/" title="软件设计层次架构" itemprop="url">软件设计层次架构</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="刘帅" target="_blank" itemprop="author">刘帅</a>
+		
+  <p class="article-time">
+    <time datetime="2016-03-08T10:33:52.000Z" itemprop="datePublished"> Published 2016-03-08</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#软件层次"><span class="toc-number">1.</span> <span class="toc-text">软件层次</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#软件框架"><span class="toc-number">2.</span> <span class="toc-text">软件框架</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#大多是MVC模式"><span class="toc-number">2.0.1.</span> <span class="toc-text">大多是MVC模式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#MVVM模式"><span class="toc-number">2.0.2.</span> <span class="toc-text">MVVM模式</span></a></li></ol></li></ol></li></ol>
+		
+		</div>
+		
+		<p>软件层次</p>
+<p><code>工具层</code>(utility，通用的工具，和具体的业务无关)</p>
+<p><code>网络层</code>(负责和server进行交互)</p>
+<a id="more"></a>
+
+<h3 id="软件层次"><a href="#软件层次" class="headerlink" title="软件层次"></a>软件层次</h3><p><code>工具层</code>(utility，通用的工具，和具体的业务无关)</p>
+<p><code>网络层</code>(负责和server进行交互)</p>
+<p><code>数据持久层</code>(本地缓存、数据库)</p>
+<p><code>model层</code>(原始数据的类载体，比如来自网络或数据库的时间戳，不进行处数据理)</p>
+<p><code>逻辑层</code>(viewmodel层，软件业务功能逻辑相关，可以给每个界面增加个逻辑层，也可以给一个业务功能多个界面增加一个逻辑层)</p>
+<p><code>UI层</code>(显示的view)</p>
+<p><code>控制层</code>(controller是个大杂炖，上面那些层都在这个controller里面彼此交互)</p>
+<h3 id="软件框架"><a href="#软件框架" class="headerlink" title="软件框架"></a>软件框架</h3><h5 id="大多是MVC模式"><a href="#大多是MVC模式" class="headerlink" title="大多是MVC模式"></a>大多是<code>MVC</code>模式</h5><p><img src="/images/mvc.png" alt=""></p>
+<p>缺点：经常会导致C很臃肿，不易管理，所以出现了MVVM。</p>
+<h5 id="MVVM模式"><a href="#MVVM模式" class="headerlink" title="MVVM模式"></a>MVVM模式</h5><p><code>MVVM</code>就是将业务逻辑从controller里面抽出来单独生成一个类，降低耦合</p>
+<p>如果要想把业务逻辑从controller中抽取出来，以实现逻辑层(viewmodel)是逻辑的载体，那么逻辑层至少需要</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1 实时的接受view里面各种数据源和事件源的变化(比如输入框、按钮等)</span><br><span class="line">2 逻辑任务处理完成后将数据、动作输出至view&#x2F;controller</span><br></pre></td></tr></table></figure>
+
+<p>要实现这两条，就需要<code>响应式编程</code>的概念。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">函数响应式编程(Functional Reactive Programing : FRP)  :  面向数据流的变化传播(管道处理，比如过滤，类型映射，订阅，组合,属性绑定)</span><br></pre></td></tr></table></figure>
+
+<p>比如 excel 3-8数码管 订阅(公众号、日报),详见<a href="https://zh.wikipedia.org/wiki/%E5%93%8D%E5%BA%94%E5%BC%8F%E7%BC%96%E7%A8%8B" target="_blank" rel="noopener">wiki</a></p>
+<p>数据流，逻辑流 这种概念思想很重要,和命令式编程大不一样</p>
+<p>由此，<code>Reactive Cocoa</code> 应运而生。</p>
+<p>Reactive Cocoa 可以承担以下任务</p>
+<p>1 数据流统一封装分发</p>
+<p><img src="/images/mvvm3.png" alt=""></p>
+<p>2 数据(双向)绑定</p>
+<p><img src="/images/mvvm1.png" alt=""></p>
+<p>3 动作事件通知</p>
+<p><img src="/images/mvvm2.png" alt=""></p>
+<p>代码实例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; data binding</span><br><span class="line">RAC(_viewModel,phone) &#x3D; _phoneTF.rac_textSignal; &#x2F;&#x2F; 这样可以(只能)观察到textField 源于键盘输入导致的值变化</span><br><span class="line">RAC(_phoneTF,text) &#x3D; [RACObserve(_viewModel, phone) distinctUntilChanged];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 清空_phoneTF</span><br><span class="line">_viewModel.phone &#x3D; @&quot;&quot;; &#x2F;&#x2F; 代码实现</span><br><span class="line">&#x2F;&#x2F; _phoneTF.text &#x3D; nil; &#x2F;&#x2F; 这种方式不行</span><br></pre></td></tr></table></figure>
+
+<p>关于使用RAC(…)，有时会有这样的错误<code>error : is already bound to key path &quot;&quot; on object  rac</code>，原因是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RAC(self.viewModel,smsCode) &#x3D; _phoneTF.rac_textSignal;</span><br><span class="line">RAC(self.viewModel,smsCode) &#x3D; _codeTF.rac_textSignal;</span><br><span class="line">给smsCode只能绑定一次,绑给别的信号了，就不能再绑给另外一个信号了,所以绑定慎用，但可以subscribeNext啊</span><br></pre></td></tr></table></figure>
+
+<p>[RACSignal createSignal] 方式创建signal，只创建一次就OK</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">-(RACSignal *)validatePhoneSignal</span><br><span class="line">&#123;</span><br><span class="line">    if (!_validatePhoneSignal) &#123;</span><br><span class="line">        _validatePhoneSignal &#x3D; [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) &#123;</span><br><span class="line">            </span><br><span class="line">            if (isValid([[UserBaseInfo share] identityName]) &amp;&amp; _idCode.length !&#x3D; 15 &amp;&amp; _idCode.length !&#x3D; 18) &#123;</span><br><span class="line">                [subscriber sendError:Error(errCode_toast, @&quot;请输入正确的15或18位身份证号&quot;)];</span><br><span class="line">                return nil;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            [_service verifyCode:_smsCode idCard:_idCode finish:^(NSError *error) &#123;</span><br><span class="line">                </span><br><span class="line">                if (error) &#123;</span><br><span class="line">                    [subscriber sendError:error];</span><br><span class="line">                &#125;else&#123;</span><br><span class="line">                    </span><br><span class="line">                    [subscriber sendNext:@(YES)];</span><br><span class="line">                    [subscriber sendCompleted];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;];</span><br><span class="line">            </span><br><span class="line">            return nil;</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _validatePhoneSignal;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>[RACSubject subject] 创建的signal，每次都得创建</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">-(RACSignal *)rechargeSignal</span><br><span class="line">&#123;    </span><br><span class="line">    RACReplaySubject *subject &#x3D; [RACReplaySubject subject];</span><br><span class="line">    _rechargeSignal &#x3D; [subject deliverOnMainThread];</span><br><span class="line">    </span><br><span class="line">    [self.submitSignal subscribeNext:^(NSNumber *x) &#123;</span><br><span class="line">        </span><br><span class="line">        if (x.boolValue) &#123;</span><br><span class="line">            [subject sendNext:@(YES)];</span><br><span class="line">            [subject sendCompleted];</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            [self.querySignal subscribeNext:^(id x) &#123;</span><br><span class="line">                [subject sendNext:@(YES)];</span><br><span class="line">                [subject sendCompleted];</span><br><span class="line">            &#125; error:^(NSError *error) &#123;</span><br><span class="line">                [subject sendError:error];</span><br><span class="line">            &#125;];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125; error:^(NSError *error) &#123;</span><br><span class="line">        [subject sendError:error];</span><br><span class="line">    &#125;];</span><br><span class="line">            </span><br><span class="line">    return _rechargeSignal;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a>►<a class="article-category-link" href="/categories/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/">软件架构</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/MVVM/">MVVM</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2016/03/08/ruan-jian-jia-gou-mvvm/" data-title="软件设计层次架构 | 刘帅的技术博客" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/03/21/multi-thread/" title="multi-thread">
+  <strong>上一篇：</strong><br/>
+  <span>
+  multi-thread</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/02/29/runtimeyun-xing-shi-zhi-xiao-xi-zhuan-fa-message-forwarding/"  title="runtime运行时之消息转发(message forwarding)">
+ <strong>下一篇：</strong><br/> 
+ <span>runtime运行时之消息转发(message forwarding)
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#软件层次"><span class="toc-number">1.</span> <span class="toc-text">软件层次</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#软件框架"><span class="toc-number">2.</span> <span class="toc-text">软件框架</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#大多是MVC模式"><span class="toc-number">2.0.1.</span> <span class="toc-text">大多是MVC模式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#MVVM模式"><span class="toc-number">2.0.2.</span> <span class="toc-text">MVVM模式</span></a></li></ol></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/OC/" title="OC">OC<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/macdown/" title="macdown">macdown<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/runtime/" title="runtime">runtime<sup>5</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/图片下载/" title="图片下载">图片下载<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/多线程/" title="多线程">多线程<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/开发/" title="开发">开发<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/日历/" title="日历">日历<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/架构/" title="架构">架构<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/软件架构/" title="软件架构">软件架构<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/键盘/" title="键盘">键盘<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/variable/" title="variable">variable<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/测滑返回/" title="测滑返回">测滑返回<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/线程安全/" title="线程安全">线程安全<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/线程的分类/" title="线程的分类">线程的分类<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/MVVM/" title="MVVM">MVVM<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/运行时/" title="运行时">运行时<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/class/" title="class">class<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/动画/" title="动画">动画<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/method/" title="method">method<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/消息转发/" title="消息转发">消息转发<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/sdwebimage/" title="sdwebimage">sdwebimage<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/UITextField/" title="UITextField">UITextField<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/inputView/" title="inputView">inputView<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/NSCalendar/" title="NSCalendar">NSCalendar<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/macdown/" title="macdown">macdown<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark&#39;s Blog">Jark&#39;s Blog</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=b3593ceb&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m Larry Page in Google. <br/>
+			This is my blog,believe it or not.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/2176287895" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2020 
+		
+		<a href="/about" target="_blank" title="刘帅">刘帅</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

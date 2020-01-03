@@ -1,0 +1,610 @@
+
+ <!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>multi-thread | 刘帅的技术博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="刘帅">
+    
+
+    
+    <meta name="description" content="线程是CPU分配和调度的基本单位，操作系统控制CPU以时间片轮流(轮转的方式)切换(执行每一个线程)形成的，由于CPU运行很">
+<meta property="og:type" content="article">
+<meta property="og:title" content="multi-thread">
+<meta property="og:url" content="http://yoursite.com/2016/03/21/multi-thread/index.html">
+<meta property="og:site_name" content="刘帅的技术博客">
+<meta property="og:description" content="线程是CPU分配和调度的基本单位，操作系统控制CPU以时间片轮流(轮转的方式)切换(执行每一个线程)形成的，由于CPU运行很">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/images/thread1.png">
+<meta property="og:image" content="http://yoursite.com/images/thread2.png">
+<meta property="og:image" content="http://yoursite.com/images/thread3.png">
+<meta property="og:image" content="http://yoursite.com/images/thread4.png">
+<meta property="article:published_time" content="2016-03-21T04:44:00.000Z">
+<meta property="article:modified_time" content="2020-01-03T07:25:56.965Z">
+<meta property="article:author" content="刘帅">
+<meta property="article:tag" content="线程安全">
+<meta property="article:tag" content="线程的分类">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/thread1.png">
+
+    
+    <link rel="alternative" href="/atom.xml" title="刘帅的技术博客" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/%02.css">
+<link rel="stylesheet" href="/.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="刘帅的技术博客" title="刘帅的技术博客"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="刘帅的技术博客">刘帅的技术博客</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/03/21/multi-thread/" title="multi-thread" itemprop="url">multi-thread</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="刘帅" target="_blank" itemprop="author">刘帅</a>
+		
+  <p class="article-time">
+    <time datetime="2016-03-21T04:44:00.000Z" itemprop="datePublished"> Published 2016-03-21</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Multi-Thread-放大理顺逻辑流、线程流"><span class="toc-number">1.</span> <span class="toc-text">Multi-Thread 放大理顺逻辑流、线程流</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#线程的产生方式"><span class="toc-number">1.1.</span> <span class="toc-text">线程的产生方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程的组成结构-实现方式"><span class="toc-number">1.2.</span> <span class="toc-text">线程的组成结构(实现方式)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程的分类"><span class="toc-number">1.3.</span> <span class="toc-text">线程的分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程的生命周期-运行状态及触发"><span class="toc-number">1.4.</span> <span class="toc-text">线程的生命周期(运行状态及触发)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程安全-线程并发"><span class="toc-number">1.5.</span> <span class="toc-text">线程安全(线程并发)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程的优先级"><span class="toc-number">1.6.</span> <span class="toc-text">线程的优先级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程间的运行机制"><span class="toc-number">1.7.</span> <span class="toc-text">线程间的运行机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程间的通信-communication"><span class="toc-number">1.8.</span> <span class="toc-text">线程间的通信(communication)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#iOS-中线程PK-NSObject-vs-NSThread-vs-NSOperation-Queue-vs-GCD"><span class="toc-number">1.9.</span> <span class="toc-text">iOS 中线程PK ( NSObject vs NSThread vs NSOperation+Queue vs GCD )</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#thread-线程-amp-process-进程-amp-program-程序"><span class="toc-number">1.10.</span> <span class="toc-text">thread(线程) &amp; process(进程) &amp; program(程序)</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>线程是CPU分配和调度的基本单位，操作系统控制CPU以时间片轮流(轮转的方式)切换(执行每一个线程)形成的，由于CPU运行很</p>
+<a id="more"></a>
+
+<h1 id="Multi-Thread-放大理顺逻辑流、线程流"><a href="#Multi-Thread-放大理顺逻辑流、线程流" class="headerlink" title="Multi-Thread 放大理顺逻辑流、线程流"></a>Multi-Thread 放大理顺逻辑流、线程流</h1><h2 id="线程的产生方式"><a href="#线程的产生方式" class="headerlink" title="线程的产生方式"></a>线程的产生方式</h2><p>线程是CPU分配和调度的基本单位，操作系统控制CPU以时间片轮流(轮转的方式)切换(执行每一个线程)形成的，由于CPU运行很快(工作可以分为5个阶段：取指令、指令译码、执行指令、访存取数和结果写回)，时间间隔小到毫秒，给用户一种同时运行的假象，线程是程序设计的逻辑层概念</p>
+<p><img src="/images/thread1.png" alt=""></p>
+<h2 id="线程的组成结构-实现方式"><a href="#线程的组成结构-实现方式" class="headerlink" title="线程的组成结构(实现方式)"></a>线程的组成结构(实现方式)</h2><p>一个标准的线程由线程ID(面向对象上就是线程的名字)、当前指令指针(PC)、寄存器、堆栈组成</p>
+<h2 id="线程的分类"><a href="#线程的分类" class="headerlink" title="线程的分类"></a>线程的分类</h2><p>主线程(对界面UI操作的task应该在主线程)、子线程</p>
+<h2 id="线程的生命周期-运行状态及触发"><a href="#线程的生命周期-运行状态及触发" class="headerlink" title="线程的生命周期(运行状态及触发)"></a>线程的生命周期(运行状态及触发)</h2><p>new -&gt; runable (ready to run) -&gt; running -&gt; dead (finished/cancel)中间可能会有过渡态 : wait / block / sleep</p>
+<p><img src="/images/thread2.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if([thread isCanceled])&#123;</span><br><span class="line">       [thread exit]; &#x2F;&#x2F;  The cancel method only informs the thread that it is cancelled,It&#39;s then the responsibility of the thread itself to check this and exit</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="线程安全-线程并发"><a href="#线程安全-线程并发" class="headerlink" title="线程安全(线程并发)"></a>线程安全(线程并发)</h2><p>一个时间点内，某个属性、某个方法、某段代码只能有一个线程对其操作（添、删、改、查、访问），这也是单一处理原则,检测方法是否同时被多个线程执行，在方法里面打印<code>[NSThread currentThread]</code>即可<br>如何保证线程安全,或者说控制线程并发 1 、线程锁(也叫互斥所mutex-lock，厕所例子)  2、优化结构：错开调用时间、两个线程间进行数据传递或归为一个线程调用</p>
+<p>线程锁 ： NSLock系列 、 @synchronized 、 pthread 、dispatch_semaphore(信号量)</p>
+<h2 id="线程的优先级"><a href="#线程的优先级" class="headerlink" title="线程的优先级"></a>线程的优先级</h2><h2 id="线程间的运行机制"><a href="#线程间的运行机制" class="headerlink" title="线程间的运行机制"></a>线程间的运行机制</h2><p>serial or concurrent ( 多个线程并发执行(线程与线程之间) )<br>synchronous and asynchronous<br>异步是任务并发执行(执行到某一方法，将方法里面的task submit到子线程，方法立即返回，程序继续执行下一行)<br>同步是任务顺序执行(执行完某一方法并返回值后，执行下一行)<br>多线程是异步的实现方式</p>
+<h2 id="线程间的通信-communication"><a href="#线程间的通信-communication" class="headerlink" title="线程间的通信(communication)"></a>线程间的通信(communication)</h2><p>performSelector:onThread:withObject:waitUntilDone:  only schedules the selector to run in the default run loop mode, if the run loop is in another mode ,it won`t run until the run loop switches back to the default mode, so you can get this :  performSelector:onThread:withObject:waitUntilDone:modes:</p>
+<p>dispatch_async(dispatch_get_main_queue(),^{…}) will run the block as soon as the main run loop returns control flow back to the event loop,it doesn`t care about modes</p>
+<h2 id="iOS-中线程PK-NSObject-vs-NSThread-vs-NSOperation-Queue-vs-GCD"><a href="#iOS-中线程PK-NSObject-vs-NSThread-vs-NSOperation-Queue-vs-GCD" class="headerlink" title="iOS 中线程PK ( NSObject vs NSThread vs NSOperation+Queue vs GCD )"></a>iOS 中线程PK ( NSObject vs NSThread vs NSOperation+Queue vs GCD )</h2><p><code>在Xcode里面点击进去，看官方language programing</code> 呵呵，这是最原始的最全面的</p>
+<p>丰富度 NSObject -&gt; NSThread -&gt; NSOperation(NSOperationQueue)</p>
+<p>NSObject里面的 performSelectorInBackground 是最原始的开启子线程方法,制造了一堆不受管理的线程，非常不建议使用</p>
+<p>NSThread对单个线程的生命周期状态需要手动控制，并可以做到精细化管理和查看，但线程间的问题解决不了，比如线程依赖，线程间数据同步(多线程访问同一个内存地址导致的互斥同步，这种情况需要加锁)</p>
+<p>NSOperation 同样具有NSThread的优势，而queue可以做到对多个线程的并发执行进行(线程间)控制，比如线程间同步</p>
+<p>GCD对多个线程并发执行的控制很强(利用 once 、semaphore、group、queue、object 、监听source)，但对单个线程的生命周期状态控制的比较粗糙，几乎没有，block提交后几乎做不了什么别的，也没法查看线程的状态，也没法撤销当前线程，适合一些简单的task</p>
+<p><img src="/images/thread3.png" alt=""></p>
+<h2 id="thread-线程-amp-process-进程-amp-program-程序"><a href="#thread-线程-amp-process-进程-amp-program-程序" class="headerlink" title="thread(线程) &amp; process(进程) &amp; program(程序)"></a>thread(线程) &amp; process(进程) &amp; program(程序)</h2><p>进程是操作系统进行资源分配和调度的一个独立单位<br>进程是由程序正文段（text）、用户数据段（user segment）、系统数据段（system　segment）共同组成的一个完整的执行环境</p>
+<p><img src="/images/thread4.png" alt=""></p>
+<p><strong>（1）正文段（text）：</strong>存放被执行的机器指令。这个段是只读的（所以，在这里不能写自己能修改的代码），它允许系统中正在运行的两个或多个进程之间能够共享这一代码。例如，有几个用户都在使用文本编辑器，在内存中仅需要该程序指令的一个副本，他们全都共享这一副本。</p>
+<p><strong>（2）用户数据段（user segment）：</strong>存放进程在执行时直接进行操作的所有数据，包括进程使用的全部变量在内。显然，这里包含的信息可以被改变。虽然进程之间可以共享正文段，但是每个进程需要有它自己的专用用户数据段。例如同时编辑文本的用户，虽然运行着同样的程序__编辑器，但是每个用户都有不同的数据：正在编辑的文本。</p>
+<p><strong>（3）系统数据段（system segment）：</strong>该段有效地存放程序运行的环境(一些控制信息)。事实上，这正是程序和进程的区别所在。如前所述，程序是由一组指令和数据组成的静态事物，它们是进程最初使用的正文段和用户数据段。作为动态事物，进程是正文段、用户数据段和系统数据段的信息的交叉综合体，其中系统数据段是进程实体最重要的一部分，之所以说它有效地存放程序运行的环境，是因为这一部分存放有进程的控制信息。系统中有许多进程，操作系统要管理它们、调度它们运行，就是通过这些控制信息。Linux为每个进程建立了task_struct数据结构来容纳这些控制信息</p>
+<p>   程序经过编译、链接后生成一个可执行文件，一个机器代码指令和数据的集合，一个静态的实体，存储在磁盘上的一个可执行映像中。程序代表期望完成某工作的计划和步骤，它还浮在纸面上等待具体实现，而具体实现是由进程来完成的，进程可以认为是运行中的程序，进行中的程序，程序的一次执行。<br>   程序装入内存后，在指令指针寄存器的控制下，不断的将指令取至CPU运行，同时还会产生一些额外数据(包括程序中各种指令和数据，还有一些额外数据，比如说寄存器的值、用来保存临时数据（例如传递给某个函数的参数、函数的返回地址、保存变量等）的堆栈（包括程序堆栈和系统堆栈）、被打开文件的数量及输入输出设备的状态等等。这个执行环境的动态变化表征程序的运行)，这个完整的执行环境称为进程(一个动态的实体，代表程序的执行过程，它随着程序中指令的执行而不断地变化),参考链接<a href="http://oss.org.cn/kernel-book/ch04/4.1.htm" target="_blank" rel="noopener">http://oss.org.cn/kernel-book/ch04/4.1.htm</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/OC/">OC</a>►<a class="article-category-link" href="/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/线程安全/">线程安全</a><a href="/tags/线程的分类/">线程的分类</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2016/03/21/multi-thread/" data-title="multi-thread | 刘帅的技术博客" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/05/11/ji-lu-yi-xie-hao-de-wang-zhan-huo-bo-ke/" title="记录一些好的网站或博客">
+  <strong>上一篇：</strong><br/>
+  <span>
+  记录一些好的网站或博客</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/03/08/ruan-jian-jia-gou-mvvm/"  title="软件设计层次架构">
+ <strong>下一篇：</strong><br/> 
+ <span>软件设计层次架构
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Multi-Thread-放大理顺逻辑流、线程流"><span class="toc-number">1.</span> <span class="toc-text">Multi-Thread 放大理顺逻辑流、线程流</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#线程的产生方式"><span class="toc-number">1.1.</span> <span class="toc-text">线程的产生方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程的组成结构-实现方式"><span class="toc-number">1.2.</span> <span class="toc-text">线程的组成结构(实现方式)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程的分类"><span class="toc-number">1.3.</span> <span class="toc-text">线程的分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程的生命周期-运行状态及触发"><span class="toc-number">1.4.</span> <span class="toc-text">线程的生命周期(运行状态及触发)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程安全-线程并发"><span class="toc-number">1.5.</span> <span class="toc-text">线程安全(线程并发)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程的优先级"><span class="toc-number">1.6.</span> <span class="toc-text">线程的优先级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程间的运行机制"><span class="toc-number">1.7.</span> <span class="toc-text">线程间的运行机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程间的通信-communication"><span class="toc-number">1.8.</span> <span class="toc-text">线程间的通信(communication)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#iOS-中线程PK-NSObject-vs-NSThread-vs-NSOperation-Queue-vs-GCD"><span class="toc-number">1.9.</span> <span class="toc-text">iOS 中线程PK ( NSObject vs NSThread vs NSOperation+Queue vs GCD )</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#thread-线程-amp-process-进程-amp-program-程序"><span class="toc-number">1.10.</span> <span class="toc-text">thread(线程) &amp; process(进程) &amp; program(程序)</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/OC/" title="OC">OC<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/macdown/" title="macdown">macdown<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/runtime/" title="runtime">runtime<sup>5</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/图片下载/" title="图片下载">图片下载<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/多线程/" title="多线程">多线程<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/开发/" title="开发">开发<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/日历/" title="日历">日历<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/架构/" title="架构">架构<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/软件架构/" title="软件架构">软件架构<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/键盘/" title="键盘">键盘<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/variable/" title="variable">variable<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/测滑返回/" title="测滑返回">测滑返回<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/线程安全/" title="线程安全">线程安全<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/线程的分类/" title="线程的分类">线程的分类<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/MVVM/" title="MVVM">MVVM<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/运行时/" title="运行时">运行时<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/class/" title="class">class<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/动画/" title="动画">动画<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/method/" title="method">method<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/消息转发/" title="消息转发">消息转发<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/sdwebimage/" title="sdwebimage">sdwebimage<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/UITextField/" title="UITextField">UITextField<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/inputView/" title="inputView">inputView<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/NSCalendar/" title="NSCalendar">NSCalendar<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/macdown/" title="macdown">macdown<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark&#39;s Blog">Jark&#39;s Blog</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=b3593ceb&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m Larry Page in Google. <br/>
+			This is my blog,believe it or not.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/2176287895" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2020 
+		
+		<a href="/about" target="_blank" title="刘帅">刘帅</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
