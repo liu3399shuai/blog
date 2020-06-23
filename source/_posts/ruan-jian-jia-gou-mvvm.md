@@ -48,14 +48,14 @@ categories:
 
 如果要想把业务逻辑从controller中抽取出来，以实现逻辑层(viewmodel)是逻辑的载体，那么逻辑层至少需要
 
-```
+```objc
 1 实时的接受view里面各种数据源和事件源的变化(比如输入框、按钮等)
 2 逻辑任务处理完成后将数据、动作输出至view/controller
 ```
 
 要实现这两条，就需要`响应式编程`的概念。
 
-```
+```objc
 函数响应式编程(Functional Reactive Programing : FRP)  :  面向数据流的变化传播(管道处理，比如过滤，类型映射，订阅，组合,属性绑定)
 ```
 
@@ -81,7 +81,7 @@ Reactive Cocoa 可以承担以下任务
 
 代码实例
 
-```
+```objc
 // data binding
 RAC(_viewModel,phone) = _phoneTF.rac_textSignal; // 这样可以(只能)观察到textField 源于键盘输入导致的值变化
 RAC(_phoneTF,text) = [RACObserve(_viewModel, phone) distinctUntilChanged];
@@ -93,7 +93,7 @@ _viewModel.phone = @""; // 代码实现
 
 关于使用RAC(...)，有时会有这样的错误`error : is already bound to key path "" on object  rac`，原因是
 
-```
+```objc
 RAC(self.viewModel,smsCode) = _phoneTF.rac_textSignal;
 RAC(self.viewModel,smsCode) = _codeTF.rac_textSignal;
 给smsCode只能绑定一次,绑给别的信号了，就不能再绑给另外一个信号了,所以绑定慎用，但可以subscribeNext啊
@@ -101,7 +101,7 @@ RAC(self.viewModel,smsCode) = _codeTF.rac_textSignal;
 
 [RACSignal createSignal] 方式创建signal，只创建一次就OK
 
-```
+```objc
 -(RACSignal *)validatePhoneSignal
 {
     if (!_validatePhoneSignal) {
@@ -133,7 +133,7 @@ RAC(self.viewModel,smsCode) = _codeTF.rac_textSignal;
 
 [RACSubject subject] 创建的signal，每次都得创建
 
-```
+```objc
 -(RACSignal *)rechargeSignal
 {    
     RACReplaySubject *subject = [RACReplaySubject subject];

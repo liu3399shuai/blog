@@ -35,7 +35,7 @@ http://stackoverflow.com/questions/19619280/octopress-pushing-error-to-github
 
 ### 发博文常用步骤
 
-```
+```bash
 cd octopress
 rake setup_github_pages
 ```
@@ -45,14 +45,14 @@ rake setup_github_pages
 
 新建博文
 
-```
+```bash
 rake new_post["输入博文的title"]
 ```
 完了后去source/_post里面就可以看到了
 
 打开博文，使用markdown软件编辑，[macDown](http://macdown.uranusjr.com/) 或者 [Mou](http://25.io/mou/)都可以,写完后去生成网页，发布
 
-```
+```bash
 rake generate
 rake deploy
 或者两个命令连城一个 rake gen_deploy
@@ -61,7 +61,7 @@ rake deploy
 
 `不要忘了`，保留更改的source文件
 
-```
+```bash
 git commit -m'msg'
 git push origin source
 ```
@@ -70,7 +70,7 @@ git push origin source
 
 在走到bundle install 这一步时候，经常失败，比如原因有如下这个
 
-```
+```bash
 Don't run Bundler as root. Bundler can ask for sudo if it is needed, and
 installing your bundle as root will break this application for all non-root
 users on this machine.
@@ -105,13 +105,14 @@ Make sure that `gem install rb-inotify -v '0.9.5'` succeeds before bundling.
 ```
 
 因为国内被墙的原因，解决方案 :在执行目录下得到一个Gemfile文件，用文本编辑器打开，修改为
-```
+
+```bash
 source "https://ruby.taobao.org"
 ```
 
 如果在使用 rake deploy rake gen_deploy 时候报出这样的错误，需要同步一下
 
-```
+```bash
 Pushing generated _deploy website
 To https://github.com/liu3399shuai/liu3399shuai.github.io.git
  ! [rejected]        master -> master (non-fast-forward)
@@ -126,7 +127,7 @@ Github Pages deploy complete
 
 同步命令
 
-```
+```bash
 cd _deploy
 git reset --hard origin/master
 cd ..

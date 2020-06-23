@@ -34,12 +34,12 @@ categories:
 
 #### 资源下载
 
-```
+```objc
 SDWebImageDownloaderOperation.h
 ```
 这个类封装一个完整的下载任务 : 继承于NSOperation，在里面创建一个用于下载的NSURLConnection，绑定下载需要的request，打开当前线程runloop，实现NSURLConnection的代理方法
 
-```
+```objc
 SDWebImageDownloader.h
 
 ```
@@ -52,19 +52,19 @@ SDWebImageDownloader.h
 
 ### 资源缓存
 
-```
+```objc
 SDImageCache.h
 ```
 这个类负责缓存文件管理 : 增加新的文件、删除存储的文件、查找存储的文件、计算、清除 存储的容量等、设定存储容量，文件数量等
 
 例如
 
-```
+```objc
 [[SDImageCache sharedImageCache] storeImage:myImage forKey:myCacheKey];
 
 ```
 
-```
+```objc
 SDImageCache *imageCache = [[SDImageCache alloc] initWithNamespace:@"myNamespace"];
 [imageCache queryDiskCacheForKey:myCacheKey done:^(UIImage *image) {
     // image is not nil if image was found
@@ -74,12 +74,12 @@ SDImageCache *imageCache = [[SDImageCache alloc] initWithNamespace:@"myNamespace
 
 ### 管理
 
-```
+```objc
 SDWebImageManager.h
 ```
 这个类是 webimage 任务的总入口，集成 下载部分 + 缓存部分
 
-```
+```objc
 SDWebImageManager *manager = [SDWebImageManager sharedManager];
 [manager downloadImageWithURL:imageURL
                       options:0
@@ -97,7 +97,7 @@ SDWebImageManager *manager = [SDWebImageManager sharedManager];
 
 都是以category形式对类进行方法扩展，直接调用即可
 
-```
+```objc
 #import <SDWebImage/UIImageView+WebCache.h>
 
 ...
@@ -122,7 +122,7 @@ SDWebImageManager *manager = [SDWebImageManager sharedManager];
 
 或者这样
 
-```
+```objc
 // Here we use the new provided sd_setImageWithURL: method to load the web image
 [cell.imageView sd_setImageWithURL:[NSURL URLWithString:@"http://www.domain.com/path/to/image.jpg"]
                       placeholderImage:[UIImage imageNamed:@"placeholder.png"]

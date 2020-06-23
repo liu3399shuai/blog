@@ -18,7 +18,7 @@ categories:
 
 关于日历就看这一个类`NSCalendar`就可以，结合日期拆解析类`NSDateComponents`就可以搞定日历相关各种奇葩问题了
 
-```
+```objc
 /**
  *  获取当前日期是周几
  *
@@ -48,11 +48,9 @@ categories:
     
     return map[week];
 }
-
 ```
 
-```
-
+```objc
 /**
  *  获取当前日期所在月的第一天是周几
  *
@@ -77,11 +75,9 @@ categories:
     
     return [beginDate weekday];
 }
-
 ```
 
-```
-
+```objc
 /**
  *  获取当前日期所在月有多少天
  *
@@ -93,11 +89,9 @@ categories:
     
     return range.length;
 }
-
 ```
 
-```
-
+```objc
 /**
  *  获取当前日期所在月的下offset个月
  *
@@ -110,11 +104,9 @@ categories:
     
     return [calendar dateByAddingComponents:comps toDate:self options:0];
 }
-
 ```
 
-```
-
+```objc
 /**
  *  获取当前日期的下offset个日期
  *
@@ -127,11 +119,9 @@ categories:
     
     return [calendar dateByAddingComponents:comps toDate:self options:0];
 }
-
 ```
 
-```
-
+```objc
 +(NSDate *)dateFromSelectIndex:(NSIndexPath *)indexPath
 {
     NSDate *date = [[NSDate date] dateOffsetMonth:indexPath.section];
@@ -154,16 +144,13 @@ categories:
     
     return [NSIndexPath indexPathForRow:row inSection:monthOffset];
 }
-
 ```
-
 
 ## 日历时间UI相关
 
 显示日历大都是UICollectionView 这个很简单，想怎么显示直接写cell就行。
 
-```
-
+```objc
 #pragma mark collectionview delegate
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -225,7 +212,6 @@ categories:
         [self.navigationController popViewControllerAnimated:YES];
     });
 }
-
 ```
 
 详细完整工程，请查看 [github](https://github.com/liu3399shuai/DatePicker)

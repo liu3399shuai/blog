@@ -59,7 +59,7 @@ class的方法列表其实是一个字典，key为selectors，IMPs为value。一
 
 利用runtime提供的method系列方法，可以很明显的知道可以将两个方法的实现exchange，这就是所谓的`swizzle`
 
-```
+```objc
 swizzle : swizzling allows you to replace a method in an existing class with one of your own making . This approach can lead to a lot of unexpected behavior ,so it should be used very sparingly.
 ```
 

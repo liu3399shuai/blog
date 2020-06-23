@@ -37,7 +37,7 @@ new -> runable (ready to run) -> running -> dead (finished/cancel)中间可能�
 
 ![](/images/thread2.png)
 
-```
+```objc
 if([thread isCanceled]){
        [thread exit]; //  The cancel method only informs the thread that it is cancelled,It's then the responsibility of the thread itself to check this and exit
 }

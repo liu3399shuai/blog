@@ -28,7 +28,7 @@ categories:
 
 ### 1 UITextField 继承自 UIResponder，UIResponder可以响应用户的交互
 
-```
+```objc
 @interface UIResponder
 
 - (BOOL)becomeFirstResponder;
@@ -36,13 +36,11 @@ categories:
 - (BOOL)resignFirstResponder;
 
 - (BOOL)isFirstResponder;
-
 ```
-
 
 ### 2 可以响应用户事件了，这还不够，UIButton也可以，点击它怎么不抬起键盘。UITextField有个属性 inputView，看解释
 
-```
+```objc
 // Presented when object becomes first responder.  If set to nil, reverts to following responder chain.  If
 // set while first responder, will not take effect until reloadInputViews is called.
 @property (nullable, readwrite, strong) UIView *inputView;
@@ -54,15 +52,15 @@ categories:
 
 ### 3 点击UITextField后，键盘抬起来了，可是点击键盘里面的字符怎么会显示到UITextField里面的呢？
 
-```
+```objc
 @interface UITextField : UIControl <UITextInput, NSCoding> 
 
 @protocol UITextInput <UIKeyInput>
 ```
 
-是因为UITextField遵守了UITextInput这个协议。而UITextInput又遵守了UIKeyInput这个协议
+是因为**UITextField**遵守了这**UITextInput**个协议。而UITextInput又遵守了**UIKeyInput**这个协议
 
-```
+```objc
 @protocol UIKeyInput <UITextInputTraits>
 
 - (BOOL)hasText;
@@ -76,7 +74,7 @@ UIKeyInput这个协议里面的这三个方法，就是实现键盘里被点击�
 
 在自定义的键盘(就是一个view)上面放置很多btn，btn事件点击如下，这样没点击一个btn，UITextField里面就会做出相应的字符显示或删除
 
-```
+```objc
 -(void)btnClick:(UIButton *)btn
 {
     NSInteger tag = btn.tag;
@@ -107,8 +105,7 @@ UIKeyInput这个协议里面的这三个方法，就是实现键盘里被点击�
 
 这个也可以，没有inputView，但可以遵守这个协议`<UIKeyInput>` 也可以让键盘抬起来
 
-```
-
+```objc
 @interface PswTextView : UIView <UITextInput> 
 
 ```
@@ -117,8 +114,8 @@ UIKeyInput这个协议里面的这三个方法，就是实现键盘里被点击�
 
 重写协议里面的以下方法
 
-```
-_textStore 是PswTextView里面的全局可变字符串变量，用来存储当前键盘里面记录的点击字符
+```objc
+// _textStore 是PswTextView里面的全局可变字符串变量，用来存储当前键盘里面记录的点击字符
 
 - (void)deleteBackward
 {
@@ -151,12 +148,11 @@ _textStore 是PswTextView里面的全局可变字符串变量，用来存储当�
 {
     return (_textStore.length > 0);
 }
-
 ```
 
 重写UIResponder里面的方法
 
-```
+```objc
 - (BOOL)canBecomeFirstResponder
 {
     return YES;
@@ -173,7 +169,7 @@ _textStore 是PswTextView里面的全局可变字符串变量，用来存储当�
 
 在这个view上面显示的键盘被点击字符的话，就用到`drawRect `方法了，在键盘里面的字符变化时候调用一句`setNeedsDisplay `
 
-```
+```objc
 -(void)drawRect:(CGRect)rect
 {    
     [_textStore drawInRect:rect withAttributes:@{NSForegroundColorAttributeName:self.color,NSFontAttributeName:self.font}];

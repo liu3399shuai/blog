@@ -28,7 +28,7 @@ OC是一门动态语言，而实现动态语言的关键就是 runtime(运行时
 
 一句话解释静态语言和动态语言 Static typing when possible, dynamic typing when needed
 
-实际使用runtime动态调用的地方 举例：respondsToSelector、performSelector、isKindOfClass、conformsToProtocol
+实际使用runtime动态调用的地方 举例：`respondsToSelector`、`performSelector`、`isKindOfClass`、`conformsToProtocol`
 
 动态语言好处：编写代码灵活方便，缺点：不易调试。。。比如JavaScript，Python，Ruby都是动态语言
 静态语言好处：结构规范、方便调试，缺点：代码编写不灵活。。不如C++、Java都是静态语言
