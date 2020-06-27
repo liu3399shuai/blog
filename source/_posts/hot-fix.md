@@ -90,7 +90,7 @@ JavaScriptCore是一种JavaScript引擎，提供解释器环境
 	2. 方法互通互调
 	即，oc实现的方法，可以通过js去调用；js实现的方法，可以通过oc去调用
 
-### 源码分析
+### 源码分析(JSPatch)
 
 ![](/images/hotfix-001.png)
 ![](/images/hotfix-002.png)
