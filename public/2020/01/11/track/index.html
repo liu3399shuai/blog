@@ -15,13 +15,13 @@
 <meta property="og:site_name" content="刘帅的技术博客">
 <meta property="og:description" content="介绍下app客户端实现的无痕埋点的实现方案">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://yoursite.com/images/jenkins-2.png">
+<meta property="og:image" content="http://yoursite.com/images/track-1.png">
 <meta property="article:published_time" content="2020-01-11T12:31:00.000Z">
-<meta property="article:modified_time" content="2020-06-27T12:19:02.323Z">
+<meta property="article:modified_time" content="2020-06-28T03:57:10.065Z">
 <meta property="article:author" content="刘帅">
 <meta property="article:tag" content="无痕埋点">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/images/jenkins-2.png">
+<meta name="twitter:image" content="http://yoursite.com/images/track-1.png">
   
     <link rel="alternative" href="/atom.xml" title="刘帅的技术博客" type="application/atom+xml">
   
@@ -180,22 +180,54 @@
         <p>介绍下app客户端实现的无痕埋点的实现方案</p>
 <a id="more"></a>
 
-<p>###Jenkins支持设置远程节点</p>
-<p>因为iOS打包只能使用Mac电脑</p>
+<p>###无痕埋点实现指标</p>
 <ol>
-<li>master Jenkins 新建 支持 slave Jenkins的 节点</li>
+<li><p>APP启动指标 </p>
+</li>
+<li><p>页面浏览指标</p>
+</li>
+<li><p>元素点击指标</p>
+</li>
+<li><p>元素曝光指标</p>
+</li>
 </ol>
-<p><img src="/images/jenkins-2.png" alt=""></p>
+<p>###无痕埋点实现厂商</p>
+<p><img src="/images/track-1.png" alt=""></p>
+<p>###无痕埋点实现方案</p>
+<ol>
+<li>采集原始数据</li>
+</ol>
+<p>利用oc的动态语言特性，runtime来实现关键方法API的hook，面向aop编程</p>
+<ul>
+<li>APP启动(热启动、冷启动)数据采集</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">+(<span class="keyword">void</span>)load</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="built_in">NSNotificationCenter</span>.defaultCenter addObserver:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(coldLaunchingNoti:) name:<span class="built_in">UIApplicationDidFinishLaunchingNotification</span> object:<span class="literal">nil</span>];</span><br><span class="line">    [<span class="built_in">NSNotificationCenter</span>.defaultCenter addObserver:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(hotLaunchingNoti:) name:<span class="built_in">UIApplicationWillEnterForegroundNotification</span> object:<span class="literal">nil</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 冷启动：打开APP</span></span><br><span class="line">+(<span class="keyword">void</span>)coldLaunchingNoti:(<span class="built_in">NSNotification</span> *)noti</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// todo </span></span><br><span class="line">	<span class="comment">// 记录record</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 热启动：APP从后台近前台</span></span><br><span class="line">+(<span class="keyword">void</span>)hotLaunchingNoti:(<span class="built_in">NSNotification</span> *)noti</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// todo </span></span><br><span class="line">	<span class="comment">// 记录record</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>页面浏览数据采集</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">+(<span class="keyword">void</span>)load</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">self</span> swizzleInstanceMethodWithOriginSel:<span class="keyword">@selector</span>(viewDidAppear:) swizzledSel:<span class="keyword">@selector</span>(tracklog_viewDidAppear:)];</span><br><span class="line">    [<span class="keyword">self</span> swizzleInstanceMethodWithOriginSel:<span class="keyword">@selector</span>(viewDidDisappear:) swizzledSel:<span class="keyword">@selector</span>(tracklog_viewDidDisappear:)];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)tracklog_viewDidAppear:(<span class="built_in">BOOL</span>)animated</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">self</span> tracklog_viewDidAppear:animated];</span><br><span class="line">    </span><br><span class="line">	<span class="comment">// todo 获取 pagename、pagetitle </span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 记录record</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)tracklog_viewDidDisappear:(<span class="built_in">BOOL</span>)animated</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">self</span> tracklog_viewDidDisappear:animated];</span><br><span class="line">    </span><br><span class="line">	<span class="comment">// todo 获取 pagename、pagetitle </span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 记录record</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>元素点击数据采集</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">+(<span class="keyword">void</span>)load</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">self</span> swizzleInstanceMethodWithOriginSel:<span class="keyword">@selector</span>(sendEvent:) swizzledSel:<span class="keyword">@selector</span>(tracklog_sendEvent:)];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)tracklog_sendEvent:(<span class="built_in">UIEvent</span> *)event</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">self</span> tracklog_sendEvent:event];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 找到点击的view</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取该view的text、xpath、所在页面pagename、pagetitle、子children的信息</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 记录 record</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>元素曝光数据采集</li>
+</ul>
+<p>以UIScrollView为例</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">+(<span class="keyword">void</span>)load</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">self</span> swizzleInstanceMethodWithOriginSel:<span class="keyword">@selector</span>(layoutSubviews) swizzledSel:<span class="keyword">@selector</span>(tracklog_layoutSubviews)];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(<span class="keyword">void</span>)tracklog_layoutSubviews</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">self</span> tracklog_layoutSubviews];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">CGRect</span> visibleRect = <span class="built_in">CGRectMake</span>(<span class="keyword">self</span>.contentOffset.x, <span class="keyword">self</span>.contentOffset.y, <span class="keyword">self</span>.frame.size.width, <span class="keyword">self</span>.frame.size.height);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 逐个比较，看该view是否在可视区域，如果在，dictionary中记录view可见性为1，并记录record</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="keyword">self</span>.userEnableSubViewTree.count; i++) &#123;</span><br><span class="line">        <span class="built_in">NSNumber</span> *value = [<span class="keyword">self</span>.tracklogDisplayMark objectForKey:item];</span><br><span class="line">        <span class="built_in">BOOL</span> contains = <span class="built_in">CGRectContainsRect</span>(visibleRect, itemRect);</span><br><span class="line">        <span class="built_in">BOOL</span> intersects = <span class="built_in">CGRectIntersectsRect</span>(visibleRect, itemRect);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (contains) &#123;</span><br><span class="line"></span><br><span class="line">			  <span class="comment">// 记录 record</span></span><br><span class="line">            </span><br><span class="line">            [<span class="keyword">self</span>.tracklogDisplayMark setObject:@(<span class="number">1</span>) forKey:key];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(<span class="keyword">void</span>)viewDidLayoutSubviewsNoti:(<span class="built_in">NSNotification</span> *)noti</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// 逐个遍历所有子view， 用一个dictionary记录该view的可见性，初始化时候可见效默认为0</span></span><br><span class="line">	<span class="comment">// 简略代码如下</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="keyword">self</span>.userEnableSubViewTree.count; i++) &#123;</span><br><span class="line">        <span class="keyword">self</span>.tracklogDisplayMark setObject:@(<span class="number">0</span>) forKey: item];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <ol start="2">
-<li>在 slave Jenkins 上 运行脚本文件</li>
+<li>原始数据入库</li>
 </ol>
-<p>java -jar agent.jar -jnlpUrl <a href="http://ip:8080/computer/rdmac/slave-agent.jnlp" target="_blank" rel="noopener">http://ip:8080/computer/rdmac/slave-agent.jnlp</a> // ip 为 master jenkins 的IP</p>
-<p>脚本运行正常后，代表 节点开启成功，可以去 master Jenkins的 节点管理里面查看 节点的状态是否 agent is connected</p>
+<p>将上面的环节采集到的数据，写入sqlite，并表明事件类型，时间、平台，用户、版本、等等 手机环境信息、app 信息等都记录下来</p>
 <ol start="3">
-<li>在 master Jenkins 上 新建 item，该配置的都配置下</li>
+<li>上传数据</li>
 </ol>
-<p>Restrict where this project can be run 选项，打对勾，label expression 里面 写 节点的 label</p>
-<p>至此，远程节点配置完成</p>
+<p>根据需要，可以实时上传，也可以 攒够10条上传，可以打开app时候上传，也可以进后台时候上传</p>
+<p>需要密上传</p>
 
       
 
@@ -321,8 +353,8 @@
     </a>
   
   
-    <a href="/2019/04/23/ios-crash/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">iOS crash的相对全面的介绍</div>
+    <a href="/2020/01/03/strengthening/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">iOS安全攻防之加固</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -637,6 +669,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">静态代码扫描</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">加固</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安全攻防</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">UIScrollView嵌套联动效果</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">破壳</a>
               </li>
             
             <div class="clearfix"></div>
