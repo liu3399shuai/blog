@@ -6,21 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>iOS app 开发模式 | 刘帅的技术博客</title>
+  <title>Jenkins平台介绍 | 刘帅的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="简单介绍下ios开发过程中app开发模式">
+  <meta name="description" content="介绍下Jenkins平台，平时经常都会用到">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS app 开发模式">
-<meta property="og:url" content="http://yoursite.com/2016/01/14/app%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:title" content="Jenkins平台介绍">
+<meta property="og:url" content="http://yoursite.com/2019/10/20/Jenkins/index.html">
 <meta property="og:site_name" content="刘帅的技术博客">
-<meta property="og:description" content="简单介绍下ios开发过程中app开发模式">
+<meta property="og:description" content="介绍下Jenkins平台，平时经常都会用到">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2016-01-14T03:31:10.000Z">
-<meta property="article:modified_time" content="2020-06-27T07:59:28.367Z">
+<meta property="og:image" content="http://yoursite.com/images/jenkins-1.png">
+<meta property="og:image" content="http://yoursite.com/images/jenkins-2.png">
+<meta property="article:published_time" content="2019-10-20T01:21:03.000Z">
+<meta property="article:modified_time" content="2020-06-28T09:48:09.432Z">
 <meta property="article:author" content="刘帅">
-<meta property="article:tag" content="app">
-<meta property="article:tag" content="开发模式">
+<meta property="article:tag" content="Jenkins">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/jenkins-1.png">
   
     <link rel="alternative" href="/atom.xml" title="刘帅的技术博客" type="application/atom+xml">
   
@@ -156,43 +158,59 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-app开发模式" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-Jenkins" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      iOS app 开发模式
+      Jenkins平台介绍
     </h1>
   
 
         
-        <a href="/2016/01/14/app%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F/" class="archive-article-date">
-  	<time datetime="2016-01-14T03:31:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-01-14</time>
+        <a href="/2019/10/20/Jenkins/" class="archive-article-date">
+  	<time datetime="2019-10-20T01:21:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-20</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>简单介绍下ios开发过程中app开发模式</p>
+        <p>介绍下Jenkins平台，平时经常都会用到</p>
 <a id="more"></a>
 
+<p>###Jenkins介绍</p>
+<p>一款由Java编写的持续集成工具</p>
+<p><a href="https://jenkins.io/zh/" target="_blank" rel="noopener">https://jenkins.io/zh/</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/Jenkins_(%E8%BD%AF%E4%BB%B6)" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Jenkins_(%E8%BD%AF%E4%BB%B6)</a></p>
+<p>###Jenkins安装</p>
+<p>当前用户下，用war方式安装</p>
+<p>下载war包文件 (<a href="https://jenkins.io/zh/doc/book/installing/" target="_blank" rel="noopener">https://jenkins.io/zh/doc/book/installing/</a>  -&gt; WAR文件 -&gt; <a href="http://mirrors.jenkins.io/war-stable/latest/jenkins.war" target="_blank" rel="noopener">http://mirrors.jenkins.io/war-stable/latest/jenkins.war</a>)</p>
+<p>！！注意，千万不要用dmg、pkg等图形化方式安装，这会导致生成一个Jenkins用户，和当前用户并列，这个Jenkins用户权限很小，很多文件访问不了，其内部也是通过 java -jar jenkins.war —httpPort=9000方式开启的Jenkins服务,可参考library/Application Support/Jenkins/jenkins-runner.sh，这种安装方式坑太多</p>
+<p>###Jenkins服务启动</p>
+<p>java -jar /Users/liu/desktop/jenkins.war –httpPort=9000</p>
+<p>###Jenkins配置、使用</p>
+<p><img src="/images/jenkins-1.png" alt=""></p>
+<p>配置过程中，支持execute shell脚本、支持文件夹分组、支持参数化构建</p>
+<p>###Jenkins支持设置远程节点</p>
+<p>因为iOS打包只能使用Mac电脑，所以一般电脑都是放公司，在内网下才能访问，没有固定IP，也没有对外域名，很不方便，导致Jenkins经常访问不了，所以需要 通过反向代理方式，将此Mac电脑的Jenkins服务可以通过外网的Jenkins访问到</p>
+<p>一个远程可以外网访问的Jenkins，一个联网但只有内网IP的Mac Jenkins，需要把后者 通过节点的形式 连到 外网Jenkins上，也就是 内网的Jenkins作为 外网Jenkins的 slave，外网Jenkins 是 内网Jenkins的 agent</p>
 <ol>
-<li><p>native app</p>
-</li>
-<li><p>web app</p>
-</li>
-<li><p>Web Hybrid App</p>
-</li>
-<li><p>React Native App、Weex app</p>
-</li>
-<li><p>JSPatch vs wax vs rollout</p>
-</li>
-<li><p>flutter</p>
-</li>
+<li>master Jenkins 新建 支持 slave Jenkins的 节点</li>
 </ol>
+<p><img src="/images/jenkins-2.png" alt=""></p>
+<ol start="2">
+<li>在 slave Jenkins 上 运行脚本文件</li>
+</ol>
+<p>java -jar agent.jar -jnlpUrl <a href="http://ip:8080/computer/rdmac/slave-agent.jnlp" target="_blank" rel="noopener">http://ip:8080/computer/rdmac/slave-agent.jnlp</a> // ip 为 master jenkins 的IP</p>
+<p>脚本运行正常后，代表 节点开启成功，可以去 master Jenkins的 节点管理里面查看 节点的状态是否 agent is connected</p>
+<ol start="3">
+<li>在 master Jenkins 上 新建 item，该配置的都配置下</li>
+</ol>
+<p>Restrict where this project can be run 选项，打对勾，label expression 里面 写 节点的 label</p>
+<p>至此，远程节点配置完成</p>
 
       
 
@@ -227,11 +245,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">app</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">开发模式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Jenkins</a>
         		</li>
       		
 		</ul>
@@ -243,11 +257,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/app//" class="article-tag-list-link color4">app</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/开发模式//" class="article-tag-list-link color5">开发模式</a>
+        			<a href="/categories/Jenkins//" class="article-tag-list-link color3">Jenkins</a>
         		</li>
       		
 		</ul>
@@ -302,7 +312,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2016/01/14/app%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/10/20/Jenkins/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -316,18 +326,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2016/01/14/php/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/12/01/package/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          php学习图谱
+          ios 自动化打包部署
         
       </div>
     </a>
   
   
-    <a href="/2016/01/14/ios/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">iOS学习图谱</div>
+    <a href="/2019/04/23/ios-crash/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">iOS crash的相对全面的介绍</div>
       <i class="icon-circle-right"></i>
     </a>
   

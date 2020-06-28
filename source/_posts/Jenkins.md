@@ -1,6 +1,6 @@
 ---
 title: "Jenkins平台介绍"
-date: 2018-10-20 9:21:03 +0800
+date: 2019-10-20 9:21:03 +0800
 comments: true
 tags:
 - Jenkins

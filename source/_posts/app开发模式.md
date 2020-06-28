@@ -1,6 +1,6 @@
 ---
 title: "iOS app 开发模式"
-date: 2016-01-14 11:31:10 +0800
+date: 2017-01-14 11:31:10 +0800
 comments: true
 tags:
 - app
